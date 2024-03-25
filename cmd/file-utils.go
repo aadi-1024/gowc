@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+func isSpace(b byte) bool {
+	return b == ' ' || b == '\n' || b == '\t' || b == '\v' || b == '\f' || b == '\r'
+}
+
 func (a *App) Generate() (string, error) {
 	ret := ""
 	var count int64
@@ -51,6 +55,7 @@ func (a *App) OtherCounts() (int, int) {
 	var err error
 	wcount := 0
 	lcount := 0
+	prev = ' '
 
 	for {
 		b, err = fr.ReadByte()
@@ -59,7 +64,7 @@ func (a *App) OtherCounts() (int, int) {
 		}
 		if b == '\n' {
 			lcount++
-		} else if b == ' ' && prev != ' ' {
+		} else if !isSpace(b) && isSpace(prev) {
 			wcount++
 		}
 		prev = b

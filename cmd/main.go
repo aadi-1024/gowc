@@ -40,8 +40,7 @@ func main() {
 	//byte count
 	flag.BoolVar(&app.C, "c", false, "gowc -c pathToFile")
 	flag.BoolVar(&app.L, "l", false, "gowc -l pathToFile")
-	//need to fix
-	//flag.BoolVar(&app.W, "w", false, "gowc -w pathToFile")
+	flag.BoolVar(&app.W, "w", false, "gowc -w pathToFile")
 
 	flag.Parse()
 
