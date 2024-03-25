@@ -43,7 +43,6 @@ func TestWordCount(t *testing.T) {
 	}
 	s := string(out)
 	bef, _, _ := strings.Cut(s, " ")
-	//wc returns 58070 but it's not correct apparently
 	if bef != "58164" {
 		t.Log(bef)
 		t.Fail()

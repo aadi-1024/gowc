@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"strconv"
+	"unicode/utf8"
 )
 
 func isSpace(b byte) bool {
@@ -23,13 +24,21 @@ func (a *App) Generate() (string, error) {
 	}
 
 	if a.L || a.W {
-		lcount, wcount := a.OtherCounts()
+		lcount, wcount := a.LineWordCounts()
 		if a.L {
 			ret += strconv.Itoa(lcount) + " "
 		}
 		if a.W {
 			ret += strconv.Itoa(wcount) + " "
 		}
+	}
+
+	if a.M {
+		cc, err := a.CharacterCount()
+		if err != nil {
+			return ret, err
+		}
+		ret += strconv.Itoa(cc) + " "
 	}
 
 	ret += a.Fd.Name()
@@ -46,8 +55,8 @@ func (a *App) ByteCount() (int64, error) {
 	return bytes, nil
 }
 
-// OtherCounts counts and returns number of lines and words
-func (a *App) OtherCounts() (int, int) {
+// LineWordCounts counts and returns number of lines and words
+func (a *App) LineWordCounts() (int, int) {
 	//b := make([]byte, 1)
 	fr := bufio.NewReader(a.Fd)
 
@@ -70,4 +79,22 @@ func (a *App) OtherCounts() (int, int) {
 		prev = b
 	}
 	return lcount, wcount
+}
+
+func (a *App) CharacterCount() (int, error) {
+	if !a.C {
+		f, err := a.ByteCount()
+		if err != nil {
+			return -1, err
+		}
+		a.fileLen = int(f)
+	}
+
+	b := make([]byte, a.fileLen)
+	//if Line and Word count generated, file pointer at end
+	_, err := a.Fd.ReadAt(b, 0)
+	if err != nil {
+		return -1, err
+	}
+	return utf8.RuneCount(b), nil
 }

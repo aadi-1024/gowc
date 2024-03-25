@@ -19,7 +19,8 @@ type App struct {
 	L bool
 	//Word count
 	W bool
-
+	//Character count
+	M bool
 	//Length
 	fileLen int
 }
@@ -41,7 +42,7 @@ func main() {
 	flag.BoolVar(&app.C, "c", false, "gowc -c pathToFile")
 	flag.BoolVar(&app.L, "l", false, "gowc -l pathToFile")
 	flag.BoolVar(&app.W, "w", false, "gowc -w pathToFile")
-
+	flag.BoolVar(&app.M, "m", false, "gowc -m pathToFile")
 	flag.Parse()
 
 	counts, err := app.Generate()
