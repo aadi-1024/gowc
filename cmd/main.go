@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
 const (
@@ -12,7 +11,16 @@ const (
 	FAILURE = 1
 )
 
+type App struct {
+	Fd *os.File
+	//byte count
+	C bool
+}
+
 func main() {
+	//Appwide config
+	app := App{}
+
 	//filepath check
 	filePath := os.Args[len(os.Args)-1]
 	fd, err := os.Open(filePath)
@@ -20,21 +28,18 @@ func main() {
 		fmt.Println("Invalid filePath")
 		os.Exit(FAILURE)
 	}
+	app.Fd = fd
 
 	//byte count
-	c := flag.Bool("c", false, "gowc -c filename")
+	flag.BoolVar(&app.C, "c", true, "gowc -c pathToFile")
 
 	flag.Parse()
-	var bytes int64
 
-	if *c {
-		fileinfo, err := fd.Stat()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(FAILURE)
-		}
-		bytes = fileinfo.Size()
+	counts, err := app.Generate()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(FAILURE)
 	}
-	fmt.Printf("%v %v\n", bytes, filepath.Base(filePath))
+	fmt.Println(counts)
 	os.Exit(SUCCESS)
 }
