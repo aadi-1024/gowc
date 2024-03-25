@@ -15,6 +15,13 @@ type App struct {
 	Fd *os.File
 	//byte count
 	C bool
+	//Line count
+	L bool
+	//Word count
+	W bool
+
+	//Length
+	fileLen int
 }
 
 func main() {
@@ -31,7 +38,10 @@ func main() {
 	app.Fd = fd
 
 	//byte count
-	flag.BoolVar(&app.C, "c", true, "gowc -c pathToFile")
+	flag.BoolVar(&app.C, "c", false, "gowc -c pathToFile")
+	flag.BoolVar(&app.L, "l", false, "gowc -l pathToFile")
+	//need to fix
+	//flag.BoolVar(&app.W, "w", false, "gowc -w pathToFile")
 
 	flag.Parse()
 

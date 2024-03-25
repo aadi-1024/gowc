@@ -1,6 +1,9 @@
 package main
 
-import "strconv"
+import (
+	"bufio"
+	"strconv"
+)
 
 func (a *App) Generate() (string, error) {
 	ret := ""
@@ -15,6 +18,16 @@ func (a *App) Generate() (string, error) {
 		ret += strconv.Itoa(int(count)) + " "
 	}
 
+	if a.L || a.W {
+		lcount, wcount := a.OtherCounts()
+		if a.L {
+			ret += strconv.Itoa(lcount) + " "
+		}
+		if a.W {
+			ret += strconv.Itoa(wcount) + " "
+		}
+	}
+
 	ret += a.Fd.Name()
 	return ret, nil
 }
@@ -25,5 +38,31 @@ func (a *App) ByteCount() (int64, error) {
 		return -1, err
 	}
 	bytes := fileInfo.Size()
+	a.fileLen = int(bytes)
 	return bytes, nil
+}
+
+// OtherCounts counts and returns number of lines and words
+func (a *App) OtherCounts() (int, int) {
+	//b := make([]byte, 1)
+	fr := bufio.NewReader(a.Fd)
+
+	var b, prev byte
+	var err error
+	wcount := 0
+	lcount := 0
+
+	for {
+		b, err = fr.ReadByte()
+		if err != nil {
+			break
+		}
+		if b == '\n' {
+			lcount++
+		} else if b == ' ' && prev != ' ' {
+			wcount++
+		}
+		prev = b
+	}
+	return lcount, wcount
 }
