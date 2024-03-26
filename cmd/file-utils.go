@@ -16,7 +16,7 @@ func (a *App) Generate() (string, error) {
 	//var err error
 
 	if a.L || a.W || a.C {
-		lcount, wcount, ccount := a.LineWordCounts()
+		lcount, wcount, ccount := a.Counts()
 		if a.L {
 			ret += strconv.Itoa(lcount) + " "
 		}
@@ -40,8 +40,8 @@ func (a *App) Generate() (string, error) {
 	return ret, nil
 }
 
-// LineWordCounts counts and returns number of lines and words
-func (a *App) LineWordCounts() (int, int, int) {
+// Counts counts and returns number of lines, words and characters
+func (a *App) Counts() (int, int, int) {
 	//b := make([]byte, 1)
 	fr := bufio.NewReader(a.Fd)
 
@@ -71,7 +71,7 @@ func (a *App) LineWordCounts() (int, int, int) {
 
 func (a *App) CharacterCount() (int, error) {
 	if !a.C || !a.W || !a.L {
-		_, _, f := a.LineWordCounts()
+		_, _, f := a.Counts()
 		a.fileLen = f
 	}
 
