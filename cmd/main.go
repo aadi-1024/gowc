@@ -45,6 +45,13 @@ func main() {
 	flag.BoolVar(&app.M, "m", false, "gowc -m pathToFile")
 	flag.Parse()
 
+	//in case no flags provided
+	if flag.NFlag() == 0 {
+		app.C = true
+		app.W = true
+		app.L = true
+	}
+
 	counts, err := app.Generate()
 	if err != nil {
 		fmt.Println(err)
