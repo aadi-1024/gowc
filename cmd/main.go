@@ -21,8 +21,8 @@ type App struct {
 	W bool
 	//Character count
 	M bool
-	//Length
-	fileLen int
+	//max buffer size
+	Max_buf int
 }
 
 func main() {
@@ -34,6 +34,7 @@ func main() {
 	flag.BoolVar(&app.L, "l", false, "gowc -l pathToFile")
 	flag.BoolVar(&app.W, "w", false, "gowc -w pathToFile")
 	flag.BoolVar(&app.M, "m", false, "gowc -m pathToFile")
+	flag.IntVar(&app.Max_buf, "b", 1048576, "gowc -w -b=1024 pathToFile") //1mb default
 	flag.Parse()
 
 	//in case no flags provided
