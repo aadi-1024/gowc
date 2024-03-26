@@ -29,15 +29,6 @@ func main() {
 	//Appwide config
 	app := App{}
 
-	//filepath check
-	filePath := os.Args[len(os.Args)-1]
-	fd, err := os.Open(filePath)
-	if err != nil {
-		fmt.Println("Invalid filePath")
-		os.Exit(FAILURE)
-	}
-	app.Fd = fd
-
 	//byte count
 	flag.BoolVar(&app.C, "c", false, "gowc -c pathToFile")
 	flag.BoolVar(&app.L, "l", false, "gowc -l pathToFile")
@@ -50,6 +41,18 @@ func main() {
 		app.C = true
 		app.W = true
 		app.L = true
+	}
+	//whether file provided
+	if flag.NArg() == 0 {
+		app.Fd = os.Stdin
+	} else {
+		filePath := os.Args[len(os.Args)-1]
+		fd, err := os.Open(filePath)
+		if err != nil {
+			fmt.Println("Invalid filePath")
+			os.Exit(FAILURE)
+		}
+		app.Fd = fd
 	}
 
 	counts, err := app.Generate()
